@@ -1,847 +1,337 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-AR">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Comunidad de pasajerxs — SUBE CANAL</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --bg:        #080808;
-  --surface:   #111111;
-  --surface2:  #1a1a1a;
-  --surface3:  #222222;
-  --text:      #F2F2F0;
-  --muted:     #888882;
-  --faint:     #3a3a38;
-  --border:    rgba(255,255,255,0.07);
-  --border-md: rgba(255,255,255,0.13);
-  --border-hi: rgba(255,255,255,0.22);
-  --green:     #C8FF00;
-  --green-dim: rgba(200,255,0,0.09);
-  --green-bdr: rgba(200,255,0,0.22);
-  --red-dim:   rgba(255,80,80,0.09);
-  --red-text:  #FF7070;
-  --red-bdr:   rgba(255,80,80,0.22);
-  --amber:     #FFB800;
-  --amber-dim: rgba(255,184,0,0.09);
-  --amber-bdr: rgba(255,184,0,0.22);
-  --font:      'Syne', sans-serif;
-  --r-sm: 8px; --r-md: 12px; --r-lg: 18px; --r-xl: 24px;
-}
-
-html { font-size: 16px; }
-
-body {
-  font-family: var(--font);
-  font-weight: 400;
-  background:
-    radial-gradient(circle at top left, rgba(200,255,0,0.04), transparent 28%),
-    radial-gradient(circle at bottom right, rgba(255,255,255,0.03), transparent 25%),
-    var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* ── HEADER ── */
-header {
-  background: rgba(17,17,17,0.92);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  padding: 0 2rem;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.header-brand { display: flex; align-items: center; gap: 12px; }
-.header-logo  { width: 38px; height: 38px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
-.header-brand-name {
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  line-height: 1;
-}
-.sync-badge { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); }
-.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); transition: background .3s; flex-shrink: 0; }
-.dot.ok      { background: var(--green); }
-.dot.loading { background: var(--amber); animation: blink 1s infinite; }
-.dot.error   { background: var(--red-text); }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
-
-/* ── MAIN ── */
-main {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 3rem 2rem 6rem;
-}
-
-/* ── INTRO ── */
-.intro { margin-bottom: 2.5rem; }
-
-.intro-title {
-  font-size: clamp(30px, 5vw, 46px);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.08;
-  margin-bottom: 16px;
-}
-.intro-title span { color: var(--green); }
-
-.intro-desc {
-  font-size: 17px;
-  font-weight: 400;
-  color: var(--muted);
-  line-height: 1.7;
-  max-width: 540px;
-}
-
-/* ── BUSCADOR ── */
-.search-wrap {
-  background: rgba(20,20,20,0.95);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1.5px solid var(--border-md);
-  border-radius: var(--r-lg);
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 1.125rem 1.5rem;
-  margin-bottom: 2rem;
-  position: sticky;
-  top: 82px;
-  z-index: 50;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.35);
-  transition: border-color .2s, box-shadow .2s;
-}
-.search-wrap:hover { border-color: rgba(200,255,0,0.22); }
-.search-wrap:focus-within {
-  border-color: var(--green);
-  box-shadow: 0 0 0 4px rgba(200,255,0,0.06), 0 10px 40px rgba(0,0,0,0.35);
-}
-.search-icon { color: var(--muted); flex-shrink: 0; }
-.search-input {
-  flex: 1;
-  border: none;
-  outline: none;
-  font-family: var(--font);
-  font-size: 19px;
-  font-weight: 400;
-  background: transparent;
-  color: var(--text);
-}
-.search-input::placeholder { color: var(--faint); }
-.search-clear {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  cursor: pointer;
-  color: var(--muted);
-  line-height: 0;
-  padding: 7px;
-  border-radius: 6px;
-  display: none;
-  transition: color .15s, background .15s;
-  flex-shrink: 0;
-}
-.search-clear:hover { color: var(--text); background: var(--surface3); }
-
-/* ── RESULTADOS ── */
-#results { margin-bottom: 2.5rem; }
-
-/* ── FICHA PASAJERO ── */
-.member-card {
-  background: linear-gradient(180deg, rgba(22,22,22,0.98), rgba(14,14,14,0.98));
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: var(--r-xl);
-  overflow: hidden;
-  animation: fadeUp .2s ease;
-  box-shadow: 0 18px 50px rgba(0,0,0,0.28);
-  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
-}
-.member-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(200,255,0,0.18);
-  box-shadow: 0 25px 60px rgba(0,0,0,0.4);
-}
-@keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
-
-.card-top {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 1.6rem 1.75rem;
-  border-bottom: 1px solid var(--border);
-}
-.avatar {
-  width: 58px; height: 58px;
-  border-radius: 50%;
-  display: grid; place-items: center;
-  font-size: 18px; font-weight: 800;
-  flex-shrink: 0;
-}
-.av-ok   { background: var(--green-dim); color: var(--green); border: 1.5px solid var(--green-bdr); }
-.av-venc { background: var(--red-dim);   color: var(--red-text); border: 1.5px solid var(--red-bdr); }
-.av-warn { background: var(--amber-dim); color: var(--amber); border: 1.5px solid var(--amber-bdr); }
-
-.card-name   { font-size: 21px; font-weight: 700; letter-spacing: -0.01em; text-transform: capitalize; line-height: 1.1; }
-.card-number { font-size: 13px; font-weight: 400; color: var(--muted); margin-top: 5px; }
-
-.card-fields { display: grid; grid-template-columns: 1fr 1fr 1fr; background: rgba(255,255,255,0.01); }
-.field { padding: 1.2rem 1.75rem; border-right: 1px solid var(--border); }
-.field:last-child { border-right: none; }
-.field-label {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--muted);
-  margin-bottom: 7px;
-}
-.field-value { font-size: 16px; font-weight: 700; }
-.field-value.mono { font-size: 15px; font-weight: 400; }
-
-.badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 12px; font-weight: 700;
-  padding: 4px 12px; border-radius: 99px;
-  text-transform: uppercase; letter-spacing: 0.06em;
-}
-.badge-ok   { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-bdr); }
-.badge-venc { background: var(--red-dim);   color: var(--red-text); border: 1px solid var(--red-bdr); }
-.badge-warn { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber-bdr); }
-.badge-dot  { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-.badge-ok .badge-dot   { background: var(--green); }
-.badge-venc .badge-dot { background: var(--red-text); }
-.badge-warn .badge-dot { background: var(--amber); }
-
-.days-bar {
-  padding: 0.9rem 1.75rem;
-  border-top: 1px solid var(--border);
-  background: rgba(255,255,255,0.015);
-  display: flex; align-items: center; gap: 8px;
-  font-size: 14px; font-weight: 400; color: var(--muted);
-}
-.days-ok   { color: var(--green); font-weight: 700; }
-.days-warn { color: var(--amber); font-weight: 700; }
-.days-venc { color: var(--red-text); font-weight: 700; }
-
-/* ── LISTA MÚLTIPLE ── */
-.multi-list { display: flex; flex-direction: column; gap: 8px; }
-.multi-item {
-  background: rgba(20,20,20,0.95);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: var(--r-md);
-  padding: 1rem 1.25rem;
-  display: flex; align-items: center; gap: 12px;
-  cursor: pointer;
-  transition: all .18s ease;
-  animation: fadeUp .2s ease;
-}
-.multi-item:hover {
-  border-color: var(--green);
-  transform: translateY(-2px);
-  background: rgba(25,25,25,0.98);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.22);
-}
-.mini-avatar { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 800; flex-shrink: 0; }
-.multi-info  { flex: 1; min-width: 0; }
-.multi-name  { font-size: 15px; font-weight: 700; text-transform: capitalize; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.multi-sub   { font-size: 12px; font-weight: 400; color: var(--muted); margin-top: 3px; }
-
-/* ── HINT ── */
-.hint { padding: 2rem 0 1rem; }
-.hint-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; color: var(--muted); }
-.hint-sub   { font-size: 14px; font-weight: 400; color: var(--faint); }
-
-/* ── SKELETON ── */
-.skeleton {
-  height: 72px; border-radius: var(--r-md);
-  background: linear-gradient(90deg, var(--surface2) 25%, var(--surface) 50%, var(--surface2) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s infinite;
-  margin-bottom: 8px;
-}
-@keyframes shimmer { 0%{background-position:200%} 100%{background-position:-200%} }
-
-/* ── SECCIÓN CONTENIDO ── */
-.content-section { margin-bottom: 2rem; }
-.content-cta {
-  font-size: 16px;
-  font-weight: 400;
-  color: var(--muted);
-  line-height: 1.65;
-  margin-bottom: 1.25rem;
-}
-
-/* ── ACORDEÓN ── */
-.accordion {
-  background: var(--surface);
-  border: 1px solid var(--border-md);
-  border-radius: var(--r-lg);
-  overflow: hidden;
-  margin-bottom: 10px;
-}
-.accordion-btn {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 1.125rem 1.5rem;
-  background: none;
-  border: none;
-  font-family: var(--font);
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text);
-  cursor: pointer;
-  text-align: left;
-  transition: background .15s, color .15s;
-}
-.accordion-btn:hover { background: rgba(200,255,0,0.04); color: var(--green); }
-.accordion-btn:hover .accordion-icon { stroke: var(--green); }
-.accordion-icon { flex-shrink: 0; transition: transform .25s ease; }
-.accordion-btn.open .accordion-icon { transform: rotate(180deg); }
-.accordion-body { display: none; padding: 0 0.75rem 0.75rem; border-top: 1px solid var(--border); }
-.accordion-body.open { display: block; }
-
-/* ── PROGRAMAS ── */
-.program-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 0.75rem 0.875rem;
-  border-radius: var(--r-md);
-  cursor: pointer;
-  transition: background .15s, color .15s;
-  margin-top: 4px;
-}
-.program-item:hover { background: rgba(200,255,0,0.06); color: var(--green); }
-.program-item.active { background: rgba(200,255,0,0.08); color: var(--green); }
-.program-item svg { flex-shrink: 0; color: var(--muted); }
-.program-item:hover svg, .program-item.active svg { color: var(--green); }
-.program-name { font-size: 15px; font-weight: 700; flex: 1; }
-
-/* ── PLAYER ── */
-.player-wrap { margin-top: 12px; border-radius: var(--r-md); overflow: hidden; }
-.player-wrap.hidden { display: none; }
-.player-label {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted);
-  margin-bottom: 8px;
-  padding: 0 0.25rem;
-}
-.yt-wrap {
-  position: relative;
-  width: 100%;
-  padding-bottom: 56.25%;
-  border-radius: var(--r-lg);
-  overflow: hidden;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-}
-.yt-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-
-/* ── BOTONES DE REDES ── */
-.links-section { margin-top: 1.5rem; }
-.links-title {
-  font-family: var(--font);
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted);
-  margin-bottom: 12px;
-}
-.links-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-.link-btn {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(20,20,20,0.95);
-  border: 1px solid var(--border-md);
-  border-radius: var(--r-md);
-  padding: 0.875rem 1.125rem;
-  text-decoration: none;
-  color: var(--text);
-  font-family: var(--font);
-  font-size: 14px;
-  font-weight: 700;
-  transition: border-color .15s, background .15s, color .15s;
-  cursor: pointer;
-}
-.link-btn:hover { border-color: var(--green); background: rgba(200,255,0,0.03); color: var(--green); }
-.link-btn:hover .link-icon { color: var(--green); }
-.link-icon { color: var(--muted); flex-shrink: 0; transition: color .15s; }
-.link-label { flex: 1; }
-.link-arrow { font-size: 14px; color: var(--faint); }
-
-/* ── EMAIL SECTION ── */
-.email-section { margin-top: 1.25rem; }
-.email-text { font-size: 14px; font-weight: 400; color: var(--muted); margin-bottom: 10px; line-height: 1.5; }
-.email-btn { width: 100%; }
-
-/* ── FOOTER ── */
-footer { text-align: center; font-size: 12px; font-weight: 400; color: var(--faint); padding-bottom: 2rem; margin-top: 3rem; }
-
-/* ── RESPONSIVE TABLET (max 768px) ── */
-@media (max-width: 768px) {
-  main { padding: 2rem 1.25rem 5rem; }
-  .search-wrap { top: 72px; padding: 1rem 1.1rem; border-radius: 18px; }
-  .search-input { font-size: 18px; }
-  .card-top { padding: 1.25rem; gap: 14px; }
-  .card-name { font-size: 19px; }
-  .field { padding: 1rem 1.25rem; }
-  .field-value { font-size: 15px; }
-  .links-grid { gap: 8px; }
-  .program-name { font-size: 14px; }
-}
-
-/* ── RESPONSIVE MOBILE (max 600px) ── */
-@media (max-width: 600px) {
-  header { padding: 0 1rem; }
-  main { padding: 1.5rem 1rem 4rem; }
-  .intro-title { font-size: 28px; }
-  .intro-desc { font-size: 15px; }
-  .search-input { font-size: 17px; }
-  .card-fields { grid-template-columns: 1fr 1fr; }
-  .field:nth-child(3) { grid-column: 1 / -1; border-right: none; border-top: 1px solid var(--border); }
-  .days-bar { padding: 0.875rem 1.25rem; font-size: 13px; }
-  .links-grid { grid-template-columns: 1fr; }
-  .email-btn { width: 100%; }
-  .accordion-btn { font-size: 15px; padding: 1rem 1.25rem; }
-  .program-name { font-size: 14px; }
-}
-
-/* ── RESPONSIVE SMALL (max 380px) ── */
-@media (max-width: 380px) {
-  .card-fields { grid-template-columns: 1fr; }
-  .field { border-right: none !important; border-top: 1px solid var(--border); }
-  .field:first-child { border-top: none; }
-  .intro-title { font-size: 25px; }
-}
-</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUBE :: Un viaje colectivo por La Plata</title>
+<meta name="description" content="Sube Canal es un medio de comunicación autogestivo con identidad platense. Conocé los beneficios de la Comunidad de Pasajerxs y sumate como socix.">
+<link rel="icon" href="assets/logo.png">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header>
-  <div class="header-brand">
-    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCALdAt0DASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD2yiiiv54OYKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACis7xBrNj4f0i41LVJhDawjJPUseygdyTxivmvxr8Ytf1yeSLSZX0nT8kKsJxMw9WfqD7Lj8etezlORYrNW/ZK0Vu3t/wWNRbPqWivhifU7+eQyT3t1K56s8rE/mTUf2y6/wCfmb/vs19OuA5da/8A5L/wS/Zn3XRXwp9suv8An5m/77NH2y6/5+Zv++zT/wBQ5f8AP/8A8l/+2D2Z910V8KfbLr/n5m/77NH2y6/5+Zv++zR/qHL/AJ//APkv/wBsHsz7ror4U+2XX/PzN/32aPtl1/z8zf8AfZo/1Dl/z/8A/Jf/ALYPZn3XRXwp9suv+fmb/vs0fbLr/n5m/wC+zR/qHL/n/wD+S/8A2wezPuuivhT7Zdf8/M3/AH2aPtl1/wA/M3/fZo/1Dl/z/wD/ACX/AO2D2Z910V8KfbLr/n5m/wC+zR9suv8An5m/77NH+ocv+f8A/wCS/wD2wezPuuivhT7Zdf8APzN/32aPtl1/z8zf99mj/UOX/P8A/wDJf/tg9mfddFfCn2y6/wCfmb/vs0fbLr/n5m/77NH+ocv+f/8A5L/9sHsz7ror4U+2XX/PzN/32aPtl1/z8zf99mj/AFDl/wA//wDyX/7YPZn3XRXwp9suv+fmb/vs0fbLr/n5m/77NH+ocv8An/8A+S//AGwezPuuivhT7Zdf8/M3/fZo+2XX/PzN/wB9mj/UOX/P/wD8l/8Atg9mfddFfCn2y6/5+Zv++zR9suv+fmb/AL7NH+ocv+f/AP5L/wDbB7M+66K+FPtl1/z8zf8AfZo+2XX/AD8zf99mj/UOX/P/AP8AJf8A7YPZn3XRXwp9suv+fmb/AL7NH2y6/wCfmb/vs0f6hy/5/wD/AJL/APbB7M+66K+FPtl1/wA/M3/fZo+2XX/PzN/32aP9Q5f8/wD/AMl/+2D2Z910V8KfbLr/AJ+Zv++zR9suv+fmb/vs0f6hy/5//wDkv/2wezPuuivhT7Zdf8/M3/fZo+2XX/PzN/32aP8AUOX/AD//APJf/tg9mfddFfCn2y6/5+Zv++zR9suv+fmb/vs0f6hy/wCf/wD5L/8AbB7M+66K+FPtl1/z8zf99mj7Zdf8/M3/AH2aP9Q5f8//APyX/wC2D2Z910V8KfbLr/n5m/77NH2y6/5+Zv8Avs0f6hy/5/8A/kv/ANsHsz7ror4U+2XX/PzN/wB9mj7Zdf8APzN/32aP9Q5f8/8A/wAl/wDtg9mfddFfCn2y6/5+Zv8Avs0fbLr/AJ+Zv++zR/qHL/n/AP8Akv8A9sHsz7ror4csta1SxlEllqV7byDndFOyn9DXqngH41ajY3Edr4rY31icL9pVAJYvc4+8P19z0rhxvBWKoQc6E1O3S1n8t7/eJwZ9H0VFa3EN3bRXFrKksEqh0kQ5DKRkEGpa+NaadmQFFFFIAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA+av2jPEkt94nj0OFyLTT0VnUHhpWGcn6KQPxNeQ11/xbYt8SNfLEk/aSOT7CuQr9zyXDww+Aowgvsp/Nq7/E3jsFFFFemMKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD6I/Zr8Ry3em32gXLljaYnt89o2OGX6BsH/gRr2uvmP9myQp4/uFGMPYSKc/78Z/pX05X49xZh4UMznyK3Mk/m9/8AMxmtQooor5okKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAPjn4s/8lI8Qf9fJ/kK5Kut+LP8AyUjxB/18n+Qrkq/ect/3Oj/hj+SN1sFFFFdowooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAPVP2cP+ShSf8AXjL/AOhJX0/XzB+zh/yUKT/rxl/9CSvp+vyXjP8A5GX/AG6v1Mp7hRRRXyZAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAfHPxZ/5KR4g/wCvk/yFclXW/Fn/AJKR4g/6+T/IVyVfvOW/7nR/wx/JG62Ciiiu0YUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAHqn7OH/JQpP+vGX/ANCSvp+vmD9nD/koUn/XjL/6ElfT9fkvGf8AyMv+3V+plPcKKKK+TICiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD45+LP/JSPEH/AF8n+Qrkq634s/8AJSPEH/Xyf5CuSr95y3/c6P8Ahj+SN1sFFFFdowooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAPVP2cP8AkoUn/XjL/wChJX0/XzB+zh/yUKT/AK8Zf/Qkr6fr8l4z/wCRl/26v1Mp7hRRRXyZAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAfHPxZ/5KR4g/6+T/IVyVdb8Wf+SkeIP+vk/wAhXJV+85b/ALnR/wAMfyRutgooortGFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQB6p+zh/wAlCk/68Zf/AEJK+n6+YP2cP+ShSf8AXjL/AOhJX0/X5Lxn/wAjL/t1fqZT3CiiivkyAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooo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RQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAH//2Q==" alt="Sube Canal" class="header-logo"/>
-    <div>
-      <div class="header-brand-name">SUBE CANAL</div>
-    </div>
-  </div>
-  <div class="sync-badge">
-    <div class="dot loading" id="dot"></div>
-    <span id="sync-label">Cargando...</span>
+<header class="site-header">
+  <div class="wrap">
+    <a href="#top" class="brand"><img src="assets/logo.png" alt="Sube Canal"></a>
+    <nav class="nav-links">
+      <a href="#beneficios">Beneficios</a>
+    </nav>
+    <a href="#asociate" class="nav-cta">Sumate</a>
   </div>
 </header>
 
-<main>
+<main id="top">
 
-  <div class="intro">
-    <div class="intro-title">Bienvenidx al buscador<br>de <span>pasajerxs</span></div>
-    <div class="intro-desc">Ingresá el nombre o apellido completo del pasajerx para consultar el estado de su membresía.</div>
-  </div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <h1>Subite a este <span class="accent">viaje colectivo</span>.</h1>
+        <div class="hero-sub">
+          <p>SUBE es un medio de comunicación independiente y autogestivo hecho en La Plata. Creamos contenidos, generamos encuentros y construimos comunidad alrededor de la cultura local.</p>
+          <p>La Comunidad de Pasajerxs sostiene SUBE todos los meses. Sumándote, vos también sos parte y accedés a beneficios en una red de espacios amigos.</p>
+        </div>
+        <div class="hero-actions">
+          <a href="#asociate" class="btn btn-primary">Quiero ser pasajerx</a>
+          <a href="#beneficios" class="btn btn-ghost">Ver beneficios</a>
+        </div>
+      </div>
 
-  <div class="search-wrap">
-    <svg class="search-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-    </svg>
-    <input id="search-input" class="search-input" type="text"
-      placeholder="Nombre o apellido..."
-      oninput="onSearch()" autocomplete="off" aria-label="Buscar pasajero"/>
-    <button class="search-clear" id="search-clear" onclick="clearSearch()" aria-label="Limpiar búsqueda">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-      </svg>
-    </button>
-  </div>
-
-  <div id="results">
-    <div class="skeleton"></div>
-    <div class="skeleton" style="height:48px"></div>
-  </div>
-
-  <div class="content-section">
-    <div class="content-cta">Explorá nuestros programas o seguinos en nuestras redes</div>
-
-    <!-- MENÚ 1: Programas 2026 -->
-    <div class="accordion">
-      <button class="accordion-btn" onclick="toggleAccordion(this)">
-        <span>Programas 2026</span>
-        <svg class="accordion-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="accordion-body">
-
-        <div class="program-item" onclick="openPlaylist('PLYT7ujTIBmWbglZ7Mmi-r4RnP1NqsDMt6', 'n15YGRZObPM', this)">
-          <span class="program-name">Programas especiales</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </div>
-        <div class="program-item" onclick="openPlaylist('PLYT7ujTIBmWZWm37-X_-CzKtCt5fgRIE1', 'sb8Ij-lc-3k', this)">
-          <span class="program-name">Estación freak</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </div>
-        <div class="program-item" onclick="openPlaylist('PLYT7ujTIBmWbEmAmjwWQMRK0TahbqHlv2', 'Q66DGczRKhE', this)">
-          <span class="program-name">Chicha y limonada</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </div>
-        <div class="program-item" onclick="openPlaylist('PLYT7ujTIBmWbDt100agv2nniNoCyQI_E4', 'Uq-MTVuBUSg', this)">
-          <span class="program-name">El amplificador</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </div>
-        <div class="program-item" onclick="openPlaylist('PLYT7ujTIBmWbzBCsllEBDI-sC8iTx60qC', 'S2Zp0_R2jQY', this)">
-          <span class="program-name">FIN</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </div>
-        <div class="program-item" onclick="openPlaylist('PLYT7ujTIBmWb0QoWKs0vVNdaJGhMFRCdU', 'ezN3JLDwhio', this)">
-          <span class="program-name">Streaming copa</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </div>
-        <div class="program-item" onclick="openPlaylist('PLYT7ujTIBmWYiJVF9dSRf6__ckwOeMf_E', 'WCZS8Matmwk', this)">
-          <span class="program-name">¿De qué viven?</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </div>
-
-        <div class="player-wrap hidden" id="player-2026">
-          <div class="player-label" id="player-2026-label"></div>
-          <div class="yt-wrap">
-            <iframe id="player-2026-iframe" src="" title="SUBE CANAL"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen loading="lazy"></iframe>
+      <div class="ticket" aria-hidden="true">
+        <div class="ticket-row">
+          <div>
+            <div class="ticket-label">Pasaje</div>
+            <div class="ticket-value lime">Sube Canal</div>
           </div>
+          <div>
+            <div class="ticket-label">Clase</div>
+            <div class="ticket-value">Pasajerx</div>
+          </div>
+        </div>
+        <hr class="ticket-divider">
+        <div class="ticket-row">
+          <div>
+            <div class="ticket-label">Destino</div>
+            <div class="ticket-value">Comunidad</div>
+          </div>
+          <div>
+            <div class="ticket-label">Beneficios</div>
+            <div class="ticket-value">+10 espacios</div>
+          </div>
+        </div>
+        <div class="ticket-barcode"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFICIOS -->
+  <section class="benefits" id="beneficios">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Beneficios para nuestra comunidad</h2>
+        <p>Espacios amigos que suman descuentos exclusivos para quienes sostienen a SUBE. Mostrá tu carnet de pasajerx y viajá con beneficios.</p>
+      </div>
+
+      <div class="benefit-grid" id="benefit-grid" data-fallback="true">
+
+        <article class="benefit-card">
+          <div class="benefit-top">
+            <div class="benefit-logo"><img src="assets/socios/exe-informatica.jpg" alt=".exe informática"></div>
+            <div>
+              <div class="benefit-name">.exe informática</div>
+              <div class="benefit-cat">Tecnología</div>
+            </div>
+          </div>
+          <ul class="benefit-perks">
+            <li>15% de descuento en servicio técnico</li>
+          </ul>
+          <div class="benefit-foot">
+            <a class="benefit-ig" href="https://www.instagram.com/puntoexe.informatica/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r="1"></circle></svg><span>@puntoexe.informatica</span></a>
+          </div>
+        </article>
+
+        <article class="benefit-card">
+          <div class="benefit-top">
+            <div class="benefit-logo mono">C</div>
+            <div>
+              <div class="benefit-name">Carpincho</div>
+              <div class="benefit-cat">Indumentaria</div>
+            </div>
+          </div>
+          <ul class="benefit-perks">
+            <li>10% de descuento</li>
+          </ul>
+          <div class="benefit-foot">
+            <a class="benefit-ig" href="https://www.instagram.com/carpincho.indumentaria/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r="1"></circle></svg><span>@carpincho.indumentaria</span></a>
+          </div>
+        </article>
+
+        <article class="benefit-card">
+          <div class="benefit-top">
+            <div class="benefit-logo"><img src="assets/socios/casa-chicha.png" alt="Casa Chicha"></div>
+            <div>
+              <div class="benefit-name">Casa Chicha</div>
+              <div class="benefit-cat">Producción cultural</div>
+            </div>
+          </div>
+          <ul class="benefit-perks">
+            <li>10% de descuento en birras</li>
+            <li>10% de descuento en talleres (por cupo)</li>
+          </ul>
+          <div class="benefit-foot">
+            <a class="benefit-ig" href="https://www.instagram.com/casachicha.lp/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r="1"></circle></svg><span>@casachicha.lp</span></a>
+          </div>
+        </article>
+
+        <article class="benefit-card">
+          <div class="benefit-top">
+            <div class="benefit-logo"><img src="assets/socios/la-compostera.png" alt="La Compostera"></div>
+            <div>
+              <div class="benefit-name">La Compostera</div>
+              <div class="benefit-cat">Gastronomía</div>
+            </div>
+          </div>
+          <ul class="benefit-perks">
+            <li>10% de descuento</li>
+          </ul>
+          <div class="benefit-foot">
+            <a class="benefit-ig" href="https://www.instagram.com/la_compostera/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r="1"></circle></svg><span>@la_compostera</span></a>
+          </div>
+        </article>
+
+        <article class="benefit-card">
+          <div class="benefit-top">
+            <div class="benefit-logo"><img src="assets/socios/la-ola-indie.png" alt="La Ola Indie"></div>
+            <div>
+              <div class="benefit-name">La Ola Indie</div>
+              <div class="benefit-cat">Eventos</div>
+            </div>
+          </div>
+          <ul class="benefit-perks">
+            <li>15% de descuento en entradas anticipadas</li>
+          </ul>
+          <div class="benefit-foot">
+            <a class="benefit-ig" href="https://www.instagram.com/laola.indie/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r="1"></circle></svg><span>@laola.indie</span></a>
+          </div>
+        </article>
+
+        <article class="benefit-card">
+          <div class="benefit-top">
+            <div class="benefit-logo"><img src="assets/socios/mascaro.png" alt="Mascaró"></div>
+            <div>
+              <div class="benefit-name">Mascaró</div>
+              <div class="benefit-cat">Librería / Editorial</div>
+            </div>
+          </div>
+          <ul class="benefit-perks">
+            <li>10% de descuento</li>
+          </ul>
+          <div class="benefit-foot">
+            <a class="benefit-ig" href="https://www.instagram.com/libreriamascaro/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r="1"></circle></svg><span>@libreriamascaro</span></a>
+          </div>
+        </article>
+
+        <article class="benefit-card">
+          <div class="benefit-top">
+            <div class="benefit-logo"><img src="assets/socios/mundo-semilla.jpg" alt="Mundo Semilla"></div>
+            <div>
+              <div class="benefit-name">Mundo Semilla</div>
+              <div class="benefit-cat">Gastronomía</div>
+            </div>
+          </div>
+          <ul class="benefit-perks">
+            <li>10% de descuento en milanesas (acumulable con Cuenta DNI)</li>
+          </ul>
+          <div class="benefit-foot">
+            <a class="benefit-ig" href="https://www.instagram.com/mundo.semilla/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r="1"></circle></svg><span>@mundo.semilla</span></a>
+          </div>
+        </article>
+
+        <article class="benefit-card">
+          <div class="benefit-top">
+            <div class="benefit-logo mono">P</div>
+            <div>
+              <div class="benefit-name">Pao tatt</div>
+              <div class="benefit-cat">Tatuajes</div>
+            </div>
+          </div>
+          <ul class="benefit-perks">
+            <li>15% de descuento</li>
+          </ul>
+          <div class="benefit-foot">
+            <a class="benefit-ig" href="https://www.instagram.com/pao.tatt/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r="1"></circle></svg><span>@pao.tatt</span></a>
+          </div>
+        </article>
+
+        <article class="benefit-card">
+          <div class="benefit-top">
+            <div class="benefit-logo mono">R</div>
+            <div>
+              <div class="benefit-name">Refugio 62</div>
+              <div class="benefit-cat">Gastronomía</div>
+            </div>
+          </div>
+          <ul class="benefit-perks">
+            <li>10% de descuento en todas las cervezas</li>
+          </ul>
+          <div class="benefit-foot">
+            <a class="benefit-ig" href="https://www.instagram.com/refugio62_/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r="1"></circle></svg><span>@refugio62_</span></a>
+          </div>
+        </article>
+
+        <article class="benefit-card">
+          <div class="benefit-top">
+            <div class="benefit-logo mono">R</div>
+            <div>
+              <div class="benefit-name">Roots Pizza</div>
+              <div class="benefit-cat">Gastronomía</div>
+            </div>
+          </div>
+          <ul class="benefit-perks">
+            <li>10% para la comunidad (acumulable con Cuenta DNI)</li>
+          </ul>
+          <div class="benefit-foot">
+            <a class="benefit-ig" href="https://www.instagram.com/roots_cooperativa/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r="1"></circle></svg><span>@roots_cooperativa</span></a>
+          </div>
+        </article>
+
+        <article class="benefit-card">
+          <div class="benefit-top">
+            <div class="benefit-logo"><img src="assets/socios/tatana.png" alt="Tatana"></div>
+            <div>
+              <div class="benefit-name">Tatana</div>
+              <div class="benefit-cat">Gastronomía</div>
+            </div>
+          </div>
+          <ul class="benefit-perks">
+            <li>10% de descuento en vermú seleccionados</li>
+          </ul>
+          <div class="benefit-foot">
+            <a class="benefit-ig" href="https://www.instagram.com/tatana.ar/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r="1"></circle></svg><span>@tatana.ar</span></a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ASOCIATE -->
+  <section class="join" id="asociate">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Asociate</p>
+        <h2>Elegí cómo subirte</h2>
+        <p>Tu aporte sostiene la producción de Sube Canal y te suma a la Comunidad de Pasajerxs, con acceso a todos los beneficios de la red.</p>
+      </div>
+
+      <div class="plans">
+
+        <div class="plan">
+          <h3>Aporte mensual</h3>
+          <div class="price">$5.000 <span>/ mes</span></div>
+          <p class="desc">Suscripción mensual vía Mercado Pago. Podés cancelarla cuando quieras.</p>
+          <a class="btn btn-primary" href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c93808497c462520197c89aa36c01c1" target="_blank" rel="noopener">Sumarme por $5.000</a>
+        </div>
+
+        <div class="plan featured">
+          <span class="plan-tag">Recomendado</span>
+          <h3>Aporte mensual</h3>
+          <div class="price">$7.500 <span>/ mes</span></div>
+          <p class="desc">Suscripción mensual vía Mercado Pago. Es el aporte que más sostiene la producción del canal.</p>
+          <a class="btn btn-primary" href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c93808497c876110197c89c88040016" target="_blank" rel="noopener">Sumarme por $7.500</a>
+        </div>
+
+        <div class="plan">
+          <h3>Aporte único</h3>
+          <div class="price">A voluntad</div>
+          <p class="desc">Un pago único, del monto que quieras, vía Mercado Pago. Ideal si preferís no suscribirte.</p>
+          <a class="btn btn-primary" href="https://link.mercadopago.com.ar/subecanal" target="_blank" rel="noopener">Hacer un aporte</a>
         </div>
 
       </div>
     </div>
-
-    <!-- MENÚ 2: Programas 2025 -->
-    <div class="accordion">
-      <button class="accordion-btn" onclick="toggleAccordion(this)">
-        <span>Programas 2025</span>
-        <svg class="accordion-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="accordion-body">
-
-        <div class="program-item" onclick="openPlaylist('PLYT7ujTIBmWYMDfMkCxsfJ95lgZ6dDZd5', 'iWGlsN0a4OQ', this)">
-          <span class="program-name">Vivos del 2025</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </div>
-
-        <div class="player-wrap hidden" id="player-2025">
-          <div class="player-label" id="player-2025-label"></div>
-          <div class="yt-wrap">
-            <iframe id="player-2025-iframe" src="" title="SUBE CANAL"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen loading="lazy"></iframe>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-  </div>
-
-  <div class="links-section">
-    <div class="links-title">Seguinos</div>
-    <div class="links-grid">
-
-      <a href="https://www.youtube.com/@subecanal" target="_blank" rel="noopener" class="link-btn">
-        <span class="link-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/>
-            <path d="m10 15 5-3-5-3z"/>
-          </svg>
-        </span>
-        <span class="link-label">YouTube</span>
-        <span class="link-arrow">↗</span>
-      </a>
-
-      <a href="https://www.instagram.com/subecanal" target="_blank" rel="noopener" class="link-btn">
-        <span class="link-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="2" width="20" height="20" rx="5"/>
-            <circle cx="12" cy="12" r="4"/>
-            <circle cx="17.5" cy="6.5" r=".5" fill="currentColor"/>
-          </svg>
-        </span>
-        <span class="link-label">Instagram</span>
-        <span class="link-arrow">↗</span>
-      </a>
-
-      <a href="https://www.tiktok.com/@subecanal" target="_blank" rel="noopener" class="link-btn">
-        <span class="link-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/>
-          </svg>
-        </span>
-        <span class="link-label">TikTok</span>
-        <span class="link-arrow">↗</span>
-      </a>
-
-    </div>
-
-    <div class="email-section">
-      <div class="email-text">Ante cualquier inconveniente contactanos por e-mail</div>
-      <a href="#" onclick="abrirMail(); return false;" class="link-btn email-btn">
-        <span class="link-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="4" width="20" height="16" rx="2"/>
-            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-          </svg>
-        </span>
-        <span class="link-label">laplatasube@gmail.com</span>
-        <span class="link-arrow">↗</span>
-      </a>
-    </div>
-
-  </div>
-
-  <footer id="footer"></footer>
+  </section>
 
 </main>
 
-<script>
-var SHEET_ID = "1r8I4QZC6SaO9GSO1R4EdyUWf_In1ZRIzPdahYIFIIhk";
-var GID      = "0";
-var REFRESH  = 5 * 60 * 1000;
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <a href="#top" class="brand"><img src="assets/logo.png" alt="Sube Canal"></a>
+      <nav class="footer-links">
+        <a href="#beneficios">Beneficios</a>
+        <a href="#asociate" class="nav-link-accent">Sumate</a>
+      </nav>
+    </div>
 
-var pasajeros = [];
-var lastUpdate = null;
+    <div class="footer-channels">
+      <a href="mailto:laplatasube@gmail.com">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
+        <span>laplatasube@gmail.com</span>
+      </a>
+      <a href="https://www.instagram.com/subecanal" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r="1"></circle></svg>
+        <span>Instagram</span>
+      </a>
+      <a href="https://www.tiktok.com/@subecanal" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3v10.5a3.5 3.5 0 1 1-3-3.46"></path><path d="M14 3c.3 2.2 2 4 4.5 4.2"></path></svg>
+        <span>TikTok</span>
+      </a>
+      <a href="https://x.com/SUBEcanal" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4l16 16M20 4L4 20"></path></svg>
+        <span>X</span>
+      </a>
+      <a href="https://www.youtube.com/@subecanal" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="3.5"></rect><path d="M10.5 9.2v5.6l5-2.8-5-2.8z" fill="currentColor" stroke="none"></path></svg>
+        <span>YouTube</span>
+      </a>
+    </div>
 
-/* ── CARGAR DATOS ── */
-function loadData() {
-  setStatus("loading", "Actualizando...");
-  var old = document.getElementById("_gviz");
-  if (old) old.parentNode.removeChild(old);
-  var s = document.createElement("script");
-  s.id  = "_gviz";
-  s.src = "https://docs.google.com/spreadsheets/d/" + SHEET_ID +
-          "/gviz/tq?tqx=out:json;responseHandler:gvizCB&gid=" + GID + "&t=" + Date.now();
-  s.onerror = function() { setStatus("error", "Sin conexion"); };
-  document.head.appendChild(s);
-}
+    <p class="footer-note">Sube Canal · Comunidad de Pasajerxs. Los descuentos y condiciones de cada beneficio son definidos por cada espacio adherido y pueden cambiar sin aviso previo.</p>
+  </div>
+</footer>
 
-window.gvizCB = function(data) {
-  try {
-    pasajeros = [];
-    data.table.rows.forEach(function(r) {
-      var n      = r.c[0] ? r.c[0].v : "";
-      var nombre = r.c[1] ? String(r.c[1].v).trim() : "";
-      var venc   = r.c[2] ? r.c[2].v : null;
-      var est    = r.c[3] ? String(r.c[3].v) : "";
-      var estado = est.indexOf("VENCIDO") >= 0 ? "VENCIDO" : "AL DIA";
-      if (nombre) pasajeros.push({ n: n, nombre: nombre, vencRaw: venc, estado: estado });
-    });
-    lastUpdate = new Date();
-    setStatus("ok", "Actualizado " + lastUpdate.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" }));
-    document.getElementById("footer").textContent =
-      "Ultima sincronizacion: " + lastUpdate.toLocaleString("es-AR");
-    render(document.getElementById("search-input").value.trim().toLowerCase());
-  } catch(e) {
-    setStatus("error", "Error al leer datos");
-  }
-};
-
-function setStatus(state, label) {
-  document.getElementById("dot").className = "dot " + state;
-  document.getElementById("sync-label").textContent = label;
-}
-
-/* ── MAIL ── */
-function abrirMail() {
-  window.location.href = "mailto:laplatasube@gmail.com?subject=Consulta%20SUBE%20CANAL";
-}
-
-/* ── BUSQUEDA ── */
-function onSearch() {
-  var q = document.getElementById("search-input").value.trim().toLowerCase();
-  document.getElementById("search-clear").style.display = q ? "flex" : "none";
-  render(q);
-}
-
-function clearSearch() {
-  document.getElementById("search-input").value = "";
-  document.getElementById("search-clear").style.display = "none";
-  render("");
-}
-
-/* ── RENDER ── */
-function render(q) {
-  var area = document.getElementById("results");
-
-  if (!pasajeros.length) {
-    area.innerHTML = "<div class='skeleton'></div><div class='skeleton' style='height:48px'></div>";
-    return;
-  }
-  if (!q) {
-    area.innerHTML = "";
-    return;
-  }
-
-  var found = pasajeros.filter(function(p) {
-    return p.nombre.toLowerCase().split(/\s+/).some(function(w) { return w === q; });
-  });
-
-  if (!found.length) {
-    area.innerHTML = "<div class='hint'><div class='hint-title'>Sin resultados</div><div class='hint-sub'>No encontramos ningun pasajero con ese nombre. Verifica la ortografia.</div></div>";
-    return;
-  }
-  if (found.length === 1) {
-    area.innerHTML = renderFull(found[0]);
-    return;
-  }
-  area.innerHTML = "<div class='multi-list'>" + found.map(renderMini).join("") + "</div>";
-}
-
-/* ── FICHA COMPLETA ── */
-function renderFull(p) {
-  var ok   = p.estado === "AL DIA";
-  var dias = diasRestantes(p.vencRaw);
-  var warn = dias !== null && dias >= 0 && dias <= 10;
-  var avCls = ok ? (warn ? "av-warn" : "av-ok") : "av-venc";
-  var bCls  = ok ? (warn ? "badge-warn" : "badge-ok") : "badge-venc";
-  var bLbl  = ok ? (warn ? "Por vencer" : "Al dia") : "Vencido";
-
-  var diasHtml = "";
-  if (dias !== null) {
-    if (dias < 0)
-      diasHtml = "<span class='days-venc'>Membresia vencida hace " + Math.abs(dias) + " dia" + (Math.abs(dias) !== 1 ? "s" : "") + ".</span>";
-    else if (dias === 0)
-      diasHtml = "<span class='days-warn'>La membresia vence hoy.</span>";
-    else if (dias <= 10)
-      diasHtml = "<span class='days-warn'>La membresia vence en <strong>" + dias + " dia" + (dias !== 1 ? "s" : "") + "</strong>.</span>";
-    else
-      diasHtml = "<span class='days-ok'>La membresia vence en <strong>" + dias + " dias</strong>.</span>";
-  }
-
-  var h = "<div class='member-card'>";
-  h += "<div class='card-top'>";
-  h += "<div class='avatar " + avCls + "'>" + ini(p.nombre) + "</div>";
-  h += "<div><div class='card-name'>" + esc(p.nombre) + "</div><div class='card-number'>Pasajero #" + p.n + "</div></div>";
-  h += "</div>";
-  h += "<div class='card-fields'>";
-  h += "<div class='field'><div class='field-label'>N de pasajero</div><div class='field-value mono'>" + p.n + "</div></div>";
-  h += "<div class='field'><div class='field-label'>Estado</div><div class='field-value'><span class='badge " + bCls + "'><span class='badge-dot'></span>" + bLbl + "</span></div></div>";
-  h += "<div class='field'><div class='field-label'>Vencimiento</div><div class='field-value mono'>" + esc(formatDate(p.vencRaw)) + "</div></div>";
-  h += "</div>";
-  if (diasHtml) {
-    h += "<div class='days-bar'><svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='4' width='18' height='18' rx='2'/><line x1='16' y1='2' x2='16' y2='6'/><line x1='8' y1='2' x2='8' y2='6'/><line x1='3' y1='10' x2='21' y2='10'/></svg>" + diasHtml + "</div>";
-  }
-  h += "</div>";
-  return h;
-}
-
-/* ── LISTA MULTIPLE ── */
-function renderMini(p) {
-  var ok   = p.estado === "AL DIA";
-  var dias = diasRestantes(p.vencRaw);
-  var warn = dias !== null && dias >= 0 && dias <= 10;
-  var avCls = ok ? (warn ? "av-warn" : "av-ok") : "av-venc";
-  var bCls  = ok ? (warn ? "badge-warn" : "badge-ok") : "badge-venc";
-  var bLbl  = ok ? (warn ? "Por vencer" : "Al dia") : "Vencido";
-  var sub   = dias !== null
-    ? (dias < 0 ? "Vencido" : dias === 0 ? "Vence hoy" : "Vence en " + dias + " dias")
-    : formatDate(p.vencRaw);
-
-  var h = "<div class='multi-item' onclick='selectOne(" + p.n + ")'>";
-  h += "<div class='mini-avatar " + avCls + "'>" + ini(p.nombre) + "</div>";
-  h += "<div class='multi-info'><div class='multi-name'>" + esc(p.nombre) + "</div>";
-  h += "<div class='multi-sub'>Pasajero #" + p.n + " &middot; " + esc(sub) + "</div></div>";
-  h += "<span class='badge " + bCls + "'><span class='badge-dot'></span>" + bLbl + "</span>";
-  h += "</div>";
-  return h;
-}
-
-function selectOne(n) {
-  var p = null;
-  pasajeros.forEach(function(x) { if (x.n == n) p = x; });
-  if (p) document.getElementById("results").innerHTML = renderFull(p);
-}
-
-/* ── UTILS ── */
-function parseGvizDate(v) {
-  if (!v) return null;
-  if (typeof v === "string" && v.indexOf("Date(") === 0) {
-    var parts = v.slice(5, -1).split(",").map(Number);
-    return new Date(parts[0], parts[1], parts[2]);
-  }
-  return null;
-}
-function formatDate(v) {
-  var d = parseGvizDate(v);
-  return d ? d.toLocaleDateString("es-AR") : (v ? String(v) : "—");
-}
-function diasRestantes(vencRaw) {
-  var d = parseGvizDate(vencRaw);
-  if (!d) return null;
-  var hoy = new Date(); hoy.setHours(0,0,0,0);
-  d.setHours(0,0,0,0);
-  return Math.round((d - hoy) / 86400000);
-}
-function ini(nombre) {
-  var p = nombre.trim().split(/\s+/).filter(Boolean);
-  return ((p[0] ? p[0][0] : "") + (p[1] ? p[1][0] : "")).toUpperCase();
-}
-function esc(s) {
-  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-}
-
-loadData();
-setInterval(loadData, REFRESH);
-
-/* ── ACORDEÓN ── */
-function toggleAccordion(btn) {
-  var body = btn.nextElementSibling;
-  var isOpen = btn.classList.contains('open');
-
-  // Cerrar todos
-  document.querySelectorAll('.accordion-btn').forEach(function(b) {
-    b.classList.remove('open');
-    b.nextElementSibling.classList.remove('open');
-  });
-
-  // Abrir el clickeado si estaba cerrado
-  if (!isOpen) {
-    btn.classList.add('open');
-    body.classList.add('open');
-  }
-}
-
-/* ── PLAYER ── */
-function openPlaylist(playlistId, videoId, itemEl) {
-  // Determinar a qué acordeón pertenece
-  var body = itemEl.closest('.accordion-body');
-  var playerId = body.querySelector('.player-wrap').id;
-  var iframeId = playerId + '-iframe';
-  var labelId  = playerId + '-label';
-
-  // Quitar activo de otros items del mismo acordeón
-  body.querySelectorAll('.program-item').forEach(function(el) {
-    el.classList.remove('active');
-  });
-  itemEl.classList.add('active');
-
-  // Cargar el iframe
-  var src = 'https://www.youtube.com/embed/' + videoId +
-            '?list=' + playlistId + '&rel=0&modestbranding=1&autoplay=1';
-  document.getElementById(iframeId).src = src;
-  document.getElementById(labelId).textContent = itemEl.querySelector('.program-name').textContent;
-  document.getElementById(playerId).classList.remove('hidden');
-}
-</script>
+<script src="assets/benefits.js"></script>
 
 </body>
 </html>
