@@ -646,12 +646,16 @@ window.gvizCB = function(data) {
   try {
     pasajeros = [];
     data.table.rows.forEach(function(r) {
+      // Google Sheets: Columna 1 = N° de pasajerx
+      //                 Columna 2 = Nombre y apellido
+      //                 Columna 3 = Fecha de vencimiento
       var n      = r.c[0] ? r.c[0].v : "";
       var nombre = r.c[1] ? String(r.c[1].v).trim() : "";
       var venc   = r.c[2] ? r.c[2].v : null;
-      var est    = r.c[3] ? String(r.c[3].v) : "";
-      var estado = est.indexOf("VENCIDO") >= 0 ? "VENCIDO" : "AL DIA";
-      if (nombre) pasajeros.push({ n: n, nombre: nombre, vencRaw: venc, estado: estado });
+
+      // El estado NO se obtiene de una columna de la planilla.
+      // Se calcula automáticamente a partir de la fecha de vencimiento.
+      if (nombre) pasajeros.push({ n: n, nombre: nombre, vencRaw: venc });
     });
     lastUpdate = new Date();
     setStatus("ok", "Actualizado " + lastUpdate.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" }));
@@ -716,12 +720,13 @@ function render(q) {
 
 /* ── FICHA COMPLETA ── */
 function renderFull(p) {
-  var ok   = p.estado === "AL DIA";
   var dias = diasRestantes(p.vencRaw);
-  var warn = dias !== null && dias >= 0 && dias <= 10;
-  var avCls = ok ? (warn ? "av-warn" : "av-ok") : "av-venc";
-  var bCls  = ok ? (warn ? "badge-warn" : "badge-ok") : "badge-venc";
-  var bLbl  = ok ? (warn ? "Por vencer" : "Al dia") : "Vencido";
+  var estado = obtenerEstado(dias);
+  var ok = estado === "AL DIA";
+  var warn = estado === "POR VENCER";
+  var avCls = estado === "VENCIDO" ? "av-venc" : (warn ? "av-warn" : "av-ok");
+  var bCls  = estado === "VENCIDO" ? "badge-venc" : (warn ? "badge-warn" : "badge-ok");
+  var bLbl  = estado === "VENCIDO" ? "Vencido" : (warn ? "Por vencer" : "Al dia");
 
   var diasHtml = "";
   if (dias !== null) {
@@ -754,12 +759,13 @@ function renderFull(p) {
 
 /* ── LISTA MULTIPLE ── */
 function renderMini(p) {
-  var ok   = p.estado === "AL DIA";
   var dias = diasRestantes(p.vencRaw);
-  var warn = dias !== null && dias >= 0 && dias <= 10;
-  var avCls = ok ? (warn ? "av-warn" : "av-ok") : "av-venc";
-  var bCls  = ok ? (warn ? "badge-warn" : "badge-ok") : "badge-venc";
-  var bLbl  = ok ? (warn ? "Por vencer" : "Al dia") : "Vencido";
+  var estado = obtenerEstado(dias);
+  var ok = estado === "AL DIA";
+  var warn = estado === "POR VENCER";
+  var avCls = estado === "VENCIDO" ? "av-venc" : (warn ? "av-warn" : "av-ok");
+  var bCls  = estado === "VENCIDO" ? "badge-venc" : (warn ? "badge-warn" : "badge-ok");
+  var bLbl  = estado === "VENCIDO" ? "Vencido" : (warn ? "Por vencer" : "Al dia");
   var sub   = dias !== null
     ? (dias < 0 ? "Vencido" : dias === 0 ? "Vence hoy" : "Vence en " + dias + " dias")
     : formatDate(p.vencRaw);
@@ -792,12 +798,37 @@ function formatDate(v) {
   var d = parseGvizDate(v);
   return d ? d.toLocaleDateString("es-AR") : (v ? String(v) : "—");
 }
+
+/*
+ * Calcula los días que faltan para el vencimiento.
+ * Un número negativo significa que la membresía ya venció.
+ */
 function diasRestantes(vencRaw) {
   var d = parseGvizDate(vencRaw);
   if (!d) return null;
-  var hoy = new Date(); hoy.setHours(0,0,0,0);
-  d.setHours(0,0,0,0);
+
+  var hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  d.setHours(0, 0, 0, 0);
+
   return Math.round((d - hoy) / 86400000);
+}
+
+/*
+ * FUENTE DE VERDAD DEL ESTADO
+ *
+ * La planilla tiene únicamente 3 columnas: N°, nombre y fecha de vencimiento.
+ * Por eso el estado se determina exclusivamente a partir de la fecha.
+ *
+ * < 0 días   -> VENCIDO
+ * 0-10 días  -> POR VENCER
+ * > 10 días  -> AL DIA
+ */
+function obtenerEstado(dias) {
+  if (dias === null) return "SIN FECHA";
+  if (dias < 0) return "VENCIDO";
+  if (dias <= 10) return "POR VENCER";
+  return "AL DIA";
 }
 function ini(nombre) {
   var p = nombre.trim().split(/\s+/).filter(Boolean);
